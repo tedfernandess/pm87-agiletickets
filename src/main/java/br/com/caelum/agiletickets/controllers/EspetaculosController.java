@@ -7,10 +7,18 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import static br.com.caelum.vraptor.view.Results.status;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
+import com.google.common.base.Strings;
+
 import br.com.caelum.agiletickets.domain.Agenda;
 import br.com.caelum.agiletickets.domain.DiretorioDeEstabelecimentos;
 import br.com.caelum.agiletickets.domain.precos.CalculadoraDePrecos;
 import br.com.caelum.agiletickets.models.Espetaculo;
+import br.com.caelum.agiletickets.models.Periodicidade;
 import br.com.caelum.agiletickets.models.Sessao;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -19,8 +27,6 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
-
-import com.google.common.base.Strings;
 
 
 @Controller
@@ -105,6 +111,32 @@ public class EspetaculosController {
 		result.include("message", "Sessão reservada com sucesso por " + CURRENCY.format(precoTotal));
 
 		result.redirectTo(IndexController.class).index();
+	}
+	
+	@Post("/espetaculo/{espetaculoId}/sessoes")
+	public void cadastraSessoes(Long espetaculoId, LocalDate inicio, LocalDate fim, LocalTime horario, Periodicidade periodicidade) {
+		Espetaculo espetaculo = carregaEspetaculo(espetaculoId);
+		// aqui faz a magica!
+		// cria sessoes baseado no periodo de inicio e fim passados pelo usuario
+		List<Sessao> sessoes = espetaculo.criaSessoes(inicio, fim, horario, periodicidade);
+		agenda.agende(sessoes);
+		result.include("message", sessoes.size() + " sessões criadas com sucesso");
+		result.redirectTo(this).lista();
+	}
+	
+	private Espetaculo carregaEspetaculo(Long espetaculoId) {
+		Espetaculo espetaculo = agenda.espetaculo(espetaculoId);
+		if (espetaculo == null) {
+			validator.add(new SimpleMessage("", ""));
+		}
+		validator.onErrorUse(status()).notFound();
+		return espetaculo;
+	}
+	
+	@Get("/espetaculo/{espetaculoId}/sessoes")
+	public void sessoes(Long espetaculoId) {
+		Espetaculo espetaculo = carregaEspetaculo(espetaculoId);
+		result.include("espetaculo", espetaculo);
 	}
 
 }
