@@ -7,14 +7,10 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-
 import br.com.caelum.agiletickets.domain.Agenda;
 import br.com.caelum.agiletickets.domain.DiretorioDeEstabelecimentos;
 import br.com.caelum.agiletickets.domain.precos.CalculadoraDePrecos;
 import br.com.caelum.agiletickets.models.Espetaculo;
-import br.com.caelum.agiletickets.models.Periodicidade;
 import br.com.caelum.agiletickets.models.Sessao;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -26,7 +22,6 @@ import br.com.caelum.vraptor.validator.Validator;
 
 import com.google.common.base.Strings;
 
-import static br.com.caelum.vraptor.view.Results.status;
 
 @Controller
 public class EspetaculosController {
