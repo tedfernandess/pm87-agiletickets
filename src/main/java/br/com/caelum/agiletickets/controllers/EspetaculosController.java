@@ -108,13 +108,4 @@ public class EspetaculosController {
 		result.redirectTo(IndexController.class).index();
 	}
 
-	private Espetaculo carregaEspetaculo(Long espetaculoId) {
-		Espetaculo espetaculo = agenda.espetaculo(espetaculoId);
-		if (espetaculo == null) {
-			validator.add(new SimpleMessage("", ""));
-		}
-		validator.onErrorUse(status()).notFound();
-		return espetaculo;
-	}
-	
 }
