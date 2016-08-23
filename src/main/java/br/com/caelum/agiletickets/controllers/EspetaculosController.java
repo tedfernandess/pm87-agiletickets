@@ -70,20 +70,6 @@ public class EspetaculosController {
 		result.redirectTo(this).lista();
 	}
 	
-	@Post("/espetaculo/{espetaculoId}/sessoes")
-	public void cadastraSessoes(Long espetaculoId, LocalDate inicio, LocalDate fim, LocalTime horario, Periodicidade periodicidade) {
-		Espetaculo espetaculo = carregaEspetaculo(espetaculoId);
-
-		// aqui faz a magica!
-		// cria sessoes baseado no periodo de inicio e fim passados pelo usuario
-		List<Sessao> sessoes = espetaculo.criaSessoes(inicio, fim, horario, periodicidade);
-
-		agenda.agende(sessoes);
-
-		result.include("message", sessoes.size() + " sessões criadas com sucesso");
-		result.redirectTo(this).lista();
-	}
-	
 	@Get("/sessao/{id}")
 	public void sessao(Long id) {
 		Sessao sessao = agenda.sessao(id);
